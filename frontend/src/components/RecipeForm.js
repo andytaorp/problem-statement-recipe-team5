@@ -7,9 +7,11 @@ const RecipeForm = () => {
     const {dispatch} = useRecipesContext()
     const {user} = useAuthContext()
 
-    const [title, setTitle] = useState('')
-    const [load, setLoad] = useState('')
-    const [reps, setReps] = useState('')
+    const [name, setName] = useState('')
+    const [ingredients, setIngredients] = useState('')
+    const [instructions, setInstructions] = useState('')
+    const [preparation, setPreparation] = useState('')
+    const [difficulty, setDifficulty] = useState('')
     const [error, setError] = useState(null)
     const [emptyFields, setEmptyFields] = useState([])
 
@@ -21,7 +23,7 @@ const RecipeForm = () => {
             return
         }
 
-        const recipe = {title, load, reps}
+        const recipe = {name, ingredients, instructions, preparation}
     
         const response = await fetch(
             `${process.env.REACT_APP_API_URL}/api/recipes`, {
@@ -40,9 +42,11 @@ const RecipeForm = () => {
         }
         if (response.ok) {
             setError(null)
-            setTitle('')
-            setLoad('')
-            setReps('')
+            setName('')
+            setIngredients('')
+            setInstructions('')
+            setPreparation('')
+            setDifficulty('')
             setError(null)
             setEmptyFields([])
             // console.log('new recipe added:', json)
@@ -55,31 +59,49 @@ const RecipeForm = () => {
         <form className="create" style={{color:"#3e2020"}} onSubmit={handleSubmit}>
             <h3>Add a New Recipe</h3>
 
-            <label>Exercise Title:</label>
+            <label>Recipe Name:</label>
             <input 
                 type="text" 
-                placeholder="e.g. Sit ups"
-                onChange={(e) => setTitle(e.target.value)} 
-                value={title}
-                className={emptyFields.includes('title') ? 'error': ''}
+                placeholder="e.g. Soup"
+                onChange={(e) => setName(e.target.value)} 
+                value={name}
+                className={emptyFields.includes('name') ? 'error': ''}
             />
 
-            <label>Load (in kg):</label>
+            <label>Ingredients:</label>
             <input 
-                type="number" 
-                placeholder="e.g. 10"
-                onChange={(e) => setLoad(e.target.value)} 
-                value={load}
-                className={emptyFields.includes('load') ? 'error': ''}
+                type="text" 
+                placeholder="e.g. Carrots, Chicken, etc."
+                onChange={(e) => setIngredients(e.target.value)} 
+                value={ingredients}
+                className={emptyFields.includes('ingredients') ? 'error': ''}
             />
 
-            <label>Number of Reps:</label>
+            <label>Cooking Instructions:</label>
             <input 
-                type="number" 
-                placeholder="e.g. 1"
-                onChange={(e) => setReps(e.target.value)} 
-                value={reps}
-                className={emptyFields.includes('reps') ? 'error': ''}
+                type="text" 
+                placeholder="e.g. Boil, Fry, etc."
+                onChange={(e) => setInstructions(e.target.value)} 
+                value={instructions}
+                className={emptyFields.includes('instructions') ? 'error': ''}
+            />
+
+            <label>Preparation Time:</label>
+            <input 
+                type="text" 
+                placeholder="e.g. 30 minutes"
+                onChange={(e) => setPreparation(e.target.value)} 
+                value={preparation}
+                className={emptyFields.includes('preparation') ? 'error': ''}
+            />
+
+            <label>Difficulty Level:</label>
+            <input 
+                type="text" 
+                placeholder="e.g. Easy, Medium, Hard"
+                onChange={(e) => setDifficulty(e.target.value)} 
+                value={difficulty}
+                className={emptyFields.includes('difficulty') ? 'error': ''}
             />
 
             <button className="btnForm">Add Recipe</button>
