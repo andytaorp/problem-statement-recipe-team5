@@ -57,14 +57,16 @@ const RecipeDetails = ({ recipe }) => {
     if (response.ok) {
       dispatch({ type: 'UPDATE_RECIPE', payload: json }) 
       setIsEditing(false)
-    }
-  }
+    }else {
+      console.error('Update failed:', json.error);
+    } 
+  };
   
 
   return (
     <div className="recipe-details">
       {isEditing ? (
-        <div>
+        <form onSubmit={handleUpdate} className="edit-form">
           <input
             type="text"
             value={formData.name}
@@ -93,7 +95,7 @@ const RecipeDetails = ({ recipe }) => {
           </select>
           <button onClick={handleUpdate}>Update</button>
           <button onClick={handleEditToggle}>Cancel</button>
-        </div>
+        </form>
       ) : (
         <div>
           <h4>{recipe.name}</h4>
@@ -102,8 +104,10 @@ const RecipeDetails = ({ recipe }) => {
           <p><strong>Preparation Time: </strong>{recipe.prepTime} minutes</p>
           <p><strong>Difficulty: </strong>{recipe.difficulty}</p>
           <p>{formatDistanceToNow(new Date(recipe.createdAt), { addSuffix: true })}</p>
-          <button onClick={handleEditToggle}>Edit</button>
-          <span className="material-symbols-outlined" onClick={handleDelete}>delete</span>
+          <div className="button-container">
+            <span id="delete" className="material-symbols-outlined" onClick={handleDelete}>delete</span>
+            <span id="update" className="material-symbols-outlined" onClick={() => setIsEditing(true)}>Edit</span>
+          </div>
         </div>
       )}
     </div>
