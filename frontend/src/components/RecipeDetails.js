@@ -7,7 +7,7 @@ import { useAuthContext } from '../hooks/useAuthContext'
 import formatDistanceToNow from 'date-fns/formatDistanceToNow'
 
 const RecipeDetails = ({ recipe }) => {
-  const {dispatch}= useRecipessContext()
+  const {dispatch}= useRecipesContext()
   const {user} = useAuthContext()
 
   const [showModal, setShowModal] = useState(false)
