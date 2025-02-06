@@ -10,7 +10,7 @@ const RecipeForm = () => {
     const [name, setName] = useState('')
     const [ingredients, setIngredients] = useState('')
     const [instructions, setInstructions] = useState('')
-    const [preparation, setPreparation] = useState('')
+    const [prepTime, setPrepTime] = useState('')
     const [difficulty, setDifficulty] = useState('')
     const [error, setError] = useState(null)
     const [emptyFields, setEmptyFields] = useState([])
@@ -20,10 +20,11 @@ const RecipeForm = () => {
 
         if (!user) {
             setError('You must be logged in')
-            return
+            return;
         }
 
-        const recipe = {name, ingredients, instructions, preparation, difficulty}
+
+        const recipe = {name, ingredients, instructions, prepTime, difficulty}
     
         const response = await fetch(
             `${process.env.REACT_APP_API_URL}/api/recipes`, {
@@ -45,7 +46,7 @@ const RecipeForm = () => {
             setName('')
             setIngredients('')
             setInstructions('')
-            setPreparation('')
+            setPrepTime('')
             setDifficulty('')
             setError(null)
             setEmptyFields([])
@@ -65,7 +66,7 @@ const RecipeForm = () => {
                 placeholder="e.g. Soup"
                 onChange={(e) => setName(e.target.value)} 
                 value={name}
-                className={emptyFields.includes('name') ? 'error': ''}
+                className={Array.isArray(emptyFields) && emptyFields.includes('name') ? 'error' : ''}
             />
 
             <label>Ingredients:</label>
@@ -74,7 +75,7 @@ const RecipeForm = () => {
                 placeholder="e.g. Carrots, Chicken, etc."
                 onChange={(e) => setIngredients(e.target.value)} 
                 value={ingredients}
-                className={emptyFields.includes('ingredients') ? 'error': ''}
+                className={Array.isArray(emptyFields) && emptyFields.includes('ingredients') ? 'error' : ''}
             />
 
             <label>Cooking Instructions:</label>
@@ -83,28 +84,28 @@ const RecipeForm = () => {
                 placeholder="e.g. Boil, Fry, etc."
                 onChange={(e) => setInstructions(e.target.value)} 
                 value={instructions}
-                className={emptyFields.includes('instructions') ? 'error': ''}
+                className={Array.isArray(emptyFields) && emptyFields.includes('instructions') ? 'error' : ''}
             />
 
             <label>Preparation Time:</label>
             <input 
                 type="text" 
                 placeholder="e.g. 30 minutes"
-                onChange={(e) => setPreparation(e.target.value)} 
-                value={preparation}
-                className={emptyFields.includes('preparation') ? 'error': ''}
+                onChange={(e) => setPrepTime(e.target.value)} 
+                value={prepTime}
+                className={Array.isArray(emptyFields) && emptyFields.includes('prepTime') ? 'error' : ''}
             />
 
             <label>Difficulty Level:</label>
             <select 
                 onChange={(e) => setDifficulty(e.target.value)} 
                 value={difficulty}
-                className={emptyFields.includes('difficulty') ? 'error' : ''}
+                className={Array.isArray(emptyFields) && emptyFields.includes('difficulty') ? 'error' : ''}
             >
                 <option value="">Select Difficulty</option>
-                <option value="Easy">Easy</option>
-                <option value="Medium">Medium</option>
-                <option value="Hard">Hard</option>
+                <option value="easy">Easy</option>
+                <option value="medium">Medium</option>
+                <option value="hard">Hard</option>
             </select>
 
 
