@@ -23,7 +23,7 @@ const RecipeForm = () => {
             return
         }
 
-        const recipe = {name, ingredients, instructions, preparation}
+        const recipe = {name, ingredients, instructions, preparation, difficulty}
     
         const response = await fetch(
             `${process.env.REACT_APP_API_URL}/api/recipes`, {
@@ -96,13 +96,17 @@ const RecipeForm = () => {
             />
 
             <label>Difficulty Level:</label>
-            <input 
-                type="text" 
-                placeholder="e.g. Easy, Medium, Hard"
+            <select 
                 onChange={(e) => setDifficulty(e.target.value)} 
                 value={difficulty}
-                className={emptyFields.includes('difficulty') ? 'error': ''}
-            />
+                className={emptyFields.includes('difficulty') ? 'error' : ''}
+            >
+                <option value="">Select Difficulty</option>
+                <option value="Easy">Easy</option>
+                <option value="Medium">Medium</option>
+                <option value="Hard">Hard</option>
+            </select>
+
 
             <button className="btnForm">Add Recipe</button>
             {error && <div className="error">{error}</div>}
