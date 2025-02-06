@@ -1,19 +1,19 @@
 import React, {useState} from 'react'
 
-import {useWorkoutsContext} from '../hooks/useWorkoutsContext'
+import {useRecipesContext} from '../hooks/useRecipesContext'
 import { useAuthContext } from '../hooks/useAuthContext'
 
 // date-fns
 import formatDistanceToNow from 'date-fns/formatDistanceToNow'
 
-const WorkoutDetails = ({ workout }) => {
-  const {dispatch}= useWorkoutsContext()
+const RecipeDetails = ({ recipe }) => {
+  const {dispatch}= useRecipessContext()
   const {user} = useAuthContext()
 
   const [showModal, setShowModal] = useState(false)
-  const [title, setTitle] = useState(workout.title)
-  const [load, setLoad] = useState(workout.load)
-  const [reps, setReps] = useState(workout.reps)
+  const [title, setTitle] = useState(recipe.title)
+  const [load, setLoad] = useState(recipe.load)
+  const [reps, setReps] = useState(recipe.reps)
 
   const handleClick = async () => {
 
@@ -22,7 +22,7 @@ const WorkoutDetails = ({ workout }) => {
     }
 
     const response = await fetch(
-      `${process.env.REACT_APP_API_URL}/api/workouts/${workout._id}`, {
+      `${process.env.REACT_APP_API_URL}/api/recipes/${recipe._id}`, {
       method: 'DELETE',
       headers: {
         'Authorization': `Bearer ${user.token}`
@@ -31,7 +31,7 @@ const WorkoutDetails = ({ workout }) => {
     const json = await response.json()
 
     if (response.ok) {
-      dispatch({type: 'DELETE_WORKOUT', payload: json})
+      dispatch({type: 'DELETE_RECIPE', payload: json})
     }
   }
 
@@ -42,31 +42,31 @@ const WorkoutDetails = ({ workout }) => {
       return
     }
 
-    const updatedWorkout = {title, load, reps}
+    const updatedRecipe = {title, load, reps}
 
     const response = await fetch(
-      `${process.env.REACT_APP_API_URL}/api/workouts/${workout._id}`, {
+      `${process.env.REACT_APP_API_URL}/api/recipes/${recipe._id}`, {
       method: 'PATCH',
       headers: {
         'Content-Type' : 'application/json',
         'Authorization': `Bearer ${user.token}`
       },
-      body: JSON.stringify(updatedWorkout) // to send updated data
+      body: JSON.stringify(updatedRecipe) // to send updated data
     })
     const json = await response.json()
 
     if (response.ok) {
-      dispatch({type: 'EDIT_WORKOUT', payload: json})
+      dispatch({type: 'EDIT_RECIPE', payload: json})
       setShowModal(false) // to close modal after an update
     }
   }
 
     return (
-      <div className="workout-details">
-        <h4>{workout.title}</h4>
-        <p><strong>Load (kg): </strong>{workout.load}</p>
-        <p><strong>Number of reps: </strong>{workout.reps}</p>
-        <p>{formatDistanceToNow(new Date(workout.createdAt), {addSuffix: true})}</p>
+      <div className="recipe-details">
+        <h4>{recipe.title}</h4>
+        <p><strong>Load (kg): </strong>{recipe.load}</p>
+        <p><strong>Number of reps: </strong>{recipe.reps}</p>
+        <p>{formatDistanceToNow(new Date(recipe.createdAt), {addSuffix: true})}</p>
 
         <div className="editAndDelete">
           <span className="material-symbols-outlined" onClick={() => setShowModal(true)}>edit</span>
@@ -76,7 +76,7 @@ const WorkoutDetails = ({ workout }) => {
         {showModal && (
           <div className='modal-overlay'>
             <div className='modal-content'>
-              <h2>Edit Workout</h2>
+              <h2>Edit Recipe</h2>
               <form onSubmit={handleChange}>
                 <label>Title:</label>
                 <input type="text" value={title} onChange={(e) => setTitle(e.target.value)}/>
@@ -97,4 +97,4 @@ const WorkoutDetails = ({ workout }) => {
     )
 }
 
-export default WorkoutDetails
+export default RecipeDetails
