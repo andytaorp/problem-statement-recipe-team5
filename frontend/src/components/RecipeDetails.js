@@ -1,31 +1,30 @@
-import React, {useState} from 'react'
-
-import {useRecipesContext} from '../hooks/useRecipesContext'
+import { useState } from 'react'
+import { useRecipesContext } from '../hooks/useRecipesContext'
 import { useAuthContext } from '../hooks/useAuthContext'
 
-// date-fns
+// date fns
 import formatDistanceToNow from 'date-fns/formatDistanceToNow'
 
 const RecipeDetails = ({ recipe }) => {
-  const {dispatch}= useRecipesContext()
-  const {user} = useAuthContext()
+  const { dispatch } = useRecipesContext()
+  const { user } = useAuthContext()
+  const [isEditing, setIsEditing] = useState(false)
+  const [formData, setFormData] = useState({
+    name: recipe.name,
+    ingredients: recipe.ingredients,
+    instructions: recipe.instructions,
+    prepTime: recipe.prepTime,
+    difficulty: recipe.difficulty
+  })
 
-  const [showModal, setShowModal] = useState(false)
-  const [title, setTitle] = useState(recipe.title)
-  const [load, setLoad] = useState(recipe.load)
-  const [reps, setReps] = useState(recipe.reps)
-
-  const handleClick = async () => {
-
+  const handleDelete = async () => {
     if (!user) {
       return
     }
 
-    const response = await fetch(
-      `${process.env.REACT_APP_API_URL}/api/recipes/${recipe._id}`, {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/api/recipes/${recipe._id}`, {
       method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${user.token}`
+      headers: { 'Authorization': `Bearer ${user.token}`
       }
     })
     const json = await response.json()
@@ -35,66 +34,80 @@ const RecipeDetails = ({ recipe }) => {
     }
   }
 
-  const handleChange = async (e) => {
-    e.preventDefault()
+  const handleEditToggle = () => {
+    setIsEditing(!isEditing)
+  }
 
+  const handleUpdate = async () => {
     if (!user) {
       return
     }
-
-    const updatedRecipe = {title, load, reps}
-
-    const response = await fetch(
-      `${process.env.REACT_APP_API_URL}/api/recipes/${recipe._id}`, {
+  
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/api/recipes/${recipe._id}`, {
       method: 'PATCH',
       headers: {
-        'Content-Type' : 'application/json',
-        'Authorization': `Bearer ${user.token}`
+        'Authorization': `Bearer ${user.token}`,
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify(updatedRecipe) // to send updated data
+      body: JSON.stringify(formData),
     })
+  
     const json = await response.json()
-
+  
     if (response.ok) {
-      dispatch({type: 'EDIT_RECIPE', payload: json})
-      setShowModal(false) // to close modal after an update
+      dispatch({ type: 'UPDATE_RECIPE', payload: json }) 
+      setIsEditing(false)
     }
   }
+  
 
-    return (
-      <div className="recipe-details">
-        <h4>{recipe.title}</h4>
-        <p><strong>Load (kg): </strong>{recipe.load}</p>
-        <p><strong>Number of reps: </strong>{recipe.reps}</p>
-        <p>{formatDistanceToNow(new Date(recipe.createdAt), {addSuffix: true})}</p>
-
-        <div className="editAndDelete">
-          <span className="material-symbols-outlined" onClick={() => setShowModal(true)}>edit</span>
-          <span className="material-symbols-outlined" onClick={handleClick}>delete</span>
+  return (
+    <div className="recipe-details">
+      {isEditing ? (
+        <div>
+          <input
+            type="text"
+            value={formData.name}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+          />
+          <textarea
+            value={formData.ingredients}
+            onChange={(e) => setFormData({ ...formData, ingredients: e.target.value })}
+          />
+          <textarea
+            value={formData.instructions}
+            onChange={(e) => setFormData({ ...formData, instructions: e.target.value })}
+          />
+          <input
+            type="number"
+            value={formData.prepTime}
+            onChange={(e) => setFormData({ ...formData, prepTime: e.target.value })}
+          />
+          <select
+            value={formData.difficulty}
+            onChange={(e) => setFormData({ ...formData, difficulty: e.target.value })}
+          >
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
+          </select>
+          <button onClick={handleUpdate}>Update</button>
+          <button onClick={handleEditToggle}>Cancel</button>
         </div>
-
-        {showModal && (
-          <div className='modal-overlay'>
-            <div className='modal-content'>
-              <h2>Edit Recipe</h2>
-              <form onSubmit={handleChange}>
-                <label>Title:</label>
-                <input type="text" value={title} onChange={(e) => setTitle(e.target.value)}/>
-                
-                <label>Load (kg):</label>
-                <input type="number" value={load} onChange={(e) => setLoad(e.target.value)}/>
-                
-                <label>Reps:</label>
-                <input type="number" value={reps} onChange={(e) => setReps(e.target.value)}/>
-
-                <button type="submit">Save Changes</button>
-                <button type="button" onClick={()=>setShowModal(false)}>Cancel</button>
-              </form>
-            </div>
-          </div>
-        )}
-      </div>
-    )
+      ) : (
+        <div>
+          <h4>{recipe.name}</h4>
+          <p><strong>Ingredients: </strong>{recipe.ingredients.join(', ')}</p>
+          <p><strong>Instructions: </strong>{recipe.instructions}</p>
+          <p><strong>Preparation Time: </strong>{recipe.prepTime} minutes</p>
+          <p><strong>Difficulty: </strong>{recipe.difficulty}</p>
+          <p>{formatDistanceToNow(new Date(recipe.createdAt), { addSuffix: true })}</p>
+          <button onClick={handleEditToggle}>Edit</button>
+          <span className="material-symbols-outlined" onClick={handleDelete}>delete</span>
+        </div>
+      )}
+    </div>
+  )
 }
 
 export default RecipeDetails
