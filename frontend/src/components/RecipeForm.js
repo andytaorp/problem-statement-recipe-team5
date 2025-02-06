@@ -89,7 +89,7 @@ const RecipeForm = () => {
 
             <label>Preparation Time:</label>
             <input 
-                type="text" 
+                type="number" 
                 placeholder="e.g. 30 minutes"
                 onChange={(e) => setPrepTime(e.target.value)} 
                 value={prepTime}
