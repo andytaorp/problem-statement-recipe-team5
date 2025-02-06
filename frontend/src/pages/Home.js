@@ -12,7 +12,7 @@ const Home = () => {
 
   // Search Function
   const [searchName, setSearchName] = useState('')
-  const filteredName = recipes ? recipes.filter((recipe) => recipe.title.toLowerCase().includes(searchName.toLowerCase())) : [];
+  const filteredName = recipes ? recipes.filter((recipe) => recipe.name.toLowerCase().includes(searchName.toLowerCase())) : [];
 
   useEffect(() => {
     const fetchRecipes = async () => {
