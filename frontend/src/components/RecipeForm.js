@@ -1,10 +1,10 @@
 import { useState } from 'react'
-import {useWorkoutsContext} from '../hooks/useWorkoutsContext'
+import {useRecipesContext} from '../hooks/useRecipesContext'
 import { useAuthContext } from '../hooks/useAuthContext'
 
-const WorkoutForm = () => {
+const RecipeForm = () => {
 
-    const {dispatch} = useWorkoutsContext()
+    const {dispatch} = useRecipesContext()
     const {user} = useAuthContext()
 
     const [title, setTitle] = useState('')
@@ -21,12 +21,12 @@ const WorkoutForm = () => {
             return
         }
 
-        const workout = {title, load, reps}
+        const recipe = {title, load, reps}
     
         const response = await fetch(
-            `${process.env.REACT_APP_API_URL}/api/workouts`, {
+            `${process.env.REACT_APP_API_URL}/api/recipes`, {
             method: 'POST',
-            body: JSON.stringify(workout),
+            body: JSON.stringify(recipe),
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${user.token}`
@@ -45,15 +45,15 @@ const WorkoutForm = () => {
             setReps('')
             setError(null)
             setEmptyFields([])
-            // console.log('new workout added:', json)
-            dispatch({type: 'CREATE_WORKOUT', payload: json})
+            // console.log('new recipe added:', json)
+            dispatch({type: 'CREATE_RECIPE', payload: json})
         }
 
     }
 
     return (
         <form className="create" style={{color:"#3e2020"}} onSubmit={handleSubmit}>
-            <h3>Add a New Workout</h3>
+            <h3>Add a New Recipe</h3>
 
             <label>Exercise Title:</label>
             <input 
@@ -82,10 +82,10 @@ const WorkoutForm = () => {
                 className={emptyFields.includes('reps') ? 'error': ''}
             />
 
-            <button className="btnForm">Add Workout</button>
+            <button className="btnForm">Add Recipe</button>
             {error && <div className="error">{error}</div>}
         </form>
     )
 }
 
-export default WorkoutForm
+export default RecipeForm
