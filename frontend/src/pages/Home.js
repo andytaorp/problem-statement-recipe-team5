@@ -1,24 +1,24 @@
 import { useEffect, useState } from "react"
-import {useWorkoutsContext} from '../hooks/useWorkoutsContext'
+import {useRecipesContext} from '../hooks/useRecipesContext'
 import { useAuthContext } from '../hooks/useAuthContext'
 
 // components
-import WorkoutDetails from "../components/WorkoutDetails"
-import WorkoutForm from "../components/WorkoutForm"
+import RecipeDetails from "../components/RecipeDetails"
+import RecipeForm from "../components/RecipeForm"
 
 const Home = () => {
-  const {workouts, dispatch} = useWorkoutsContext()
+  const {recipes, dispatch} = useRecipesContext()
   const {user} = useAuthContext()
 
   // Search Function
   const [searchName, setSearchName] = useState('')
-  const filteredName = workouts ? workouts.filter((workout) => workout.title.toLowerCase().includes(searchName.toLowerCase())) : [];
+  const filteredName = recipes ? recipes.filter((recipe) => recipe.title.toLowerCase().includes(searchName.toLowerCase())) : [];
 
   useEffect(() => {
-    const fetchWorkouts = async () => {
-      // const response = await fetch(`${process.env.REACT_APP_API_URL}/api/workouts`);
+    const fetchRecipes = async () => {
+      // const response = await fetch(`${process.env.REACT_APP_API_URL}/api/recipes`);
       const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/api/workouts`, {
+        `${process.env.REACT_APP_API_URL}/api/recipes`, {
           headers: {
             'Authorization': `Bearer ${user.token}`
           }
@@ -27,22 +27,22 @@ const Home = () => {
       const json = await response.json()
 
       if (response.ok) {
-        dispatch({type: 'SET_WORKOUTS', payload: json})
+        dispatch({type: 'SET_RECIPES', payload: json})
       }
     }
 
     if (user) {
-      fetchWorkouts()
+      fetchRecipes()
     }
 
   }, [dispatch, user])
 
   return (
     <div>
-      <label style={{fontSize:"20px",color:"#127475"}}>Search Workouts:</label>
+      <label style={{fontSize:"20px",color:"#127475"}}>Search Recipes:</label>
       <input
         type="text"
-        placeholder="Enter a workout"
+        placeholder="Enter a recipe"
         value={searchName}
         onChange = {(e) => setSearchName(e.target.value)}
         style={{
@@ -55,12 +55,12 @@ const Home = () => {
       />
       
       <div className="home">
-        <div className="workouts">
-          {filteredName.map(workout => (
-            <WorkoutDetails workout={workout} key={workout._id} />
+        <div className="recipes">
+          {filteredName.map(recipe => (
+            <RecipeDetails recipe={recipe} key={recipe._id} />
           ))}
         </div>
-        <WorkoutForm />
+        <RecipeForm />
       </div>
       
     </div>
