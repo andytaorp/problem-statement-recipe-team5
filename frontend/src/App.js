@@ -7,6 +7,10 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Navbar from "./components/Navbar";
 
+import AIdetection from './pages/AIdetection';
+
+// console.log("Frontend API Key:", process.env.REACT_APP_LOGMEAL_API_KEY);
+
 function App() {
   const {user} = useAuthContext()
 
@@ -19,6 +23,10 @@ function App() {
             <Route 
               path="/"
               element={user ? <Home /> : <Navigate to="/login"/>}
+            />
+            <Route
+              path="/aidetection"
+              element={user ? <AIdetection/> : <Navigate to="/login"/>}
             />
             <Route 
               path="/login"

@@ -17,6 +17,10 @@ const Navbar = () => {
                     <h1>Food Recipes</h1>
                 </Link>
 
+                <Link to="/aidetection">
+                    <h1 className="AIpage">AI Detection</h1>
+                </Link>
+
                 <nav>
                     {user && (
                         <div>
