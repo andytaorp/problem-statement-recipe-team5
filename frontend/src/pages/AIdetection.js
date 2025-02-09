@@ -8,7 +8,7 @@ const AIdetection = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const { user } = useAuthContext(); // Get logged-in user
+  const { user } = useAuthContext();
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
@@ -26,14 +26,13 @@ const AIdetection = () => {
     formData.append("image", image);
 
     try {
-      // Step 1: Upload Image to LogMeal (Food Recognition)
       const recognitionResponse = await axios.post(
         "https://api.logmeal.com/v2/image/segmentation/complete",
         formData,
         {
           headers: { 
             "Content-Type": "multipart/form-data",
-            "Authorization": `Bearer ${process.env.REACT_APP_LOGMEAL_API_KEY}`, // Fixed env variable
+            "Authorization": `Bearer ${process.env.REACT_APP_LOGMEAL_API_KEY}`,
           },
         }
       );
@@ -41,10 +40,9 @@ const AIdetection = () => {
       const imageId = recognitionResponse.data.imageId;
       console.log("Image ID:", imageId);
 
-      // Step 2: Get Ingredients Info using imageId (Fixed API Endpoint)
       const ingredientsResponse = await axios.post(
         "https://api.logmeal.com/v2/recipe/ingredients",
-        { imageId: imageId }, // Pass the imageId from previous step
+        { imageId: imageId },
         {
           headers: {
             "Authorization": `Bearer ${process.env.REACT_APP_LOGMEAL_API_KEY}`,
@@ -55,7 +53,7 @@ const AIdetection = () => {
       console.log("Ingredients Response:", ingredientsResponse.data);
 
       //CHECKING
-      console.log("Full API Response:", JSON.stringify(ingredientsResponse.data, null, 2));
+      // console.log("Full API Response:", JSON.stringify(ingredientsResponse.data, null, 2));
 
       setFoodData(ingredientsResponse.data);
     } catch (err) {
